@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homework 3: Final Analysis | Alexandra Lopez</title>
+<meta name="description" content="Homework 3 analysis of the Northwind dataset for 15.561 Digital Revolution, Fall 2026.">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #fcfcfb; --ink: #1a1a19; --ink-2: #52514e; --rule: #e4e3df; --accent: #1c5cab; --row: #f4f3f0;
+  --text-width: 40rem; --wide-width: 62rem;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 1.0625rem/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-wrap: break-word;
+}
+header, main { max-width: var(--text-width); margin: 0 auto; padding: 0 1.25rem; }
+header { padding-top: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--rule); }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .75rem; letter-spacing: -.01em; }
+.byline { margin: 0; color: var(--ink-2); }
+.byline strong { color: var(--ink); font-weight: 600; }
+.data-note { margin: 1rem 0 0; font-size: .95rem; color: var(--ink-2); }
+section { padding: 2.5rem 0 1rem; border-bottom: 1px solid var(--rule); }
+section:last-of-type { border-bottom: 0; }
+h2 { font-size: 1.5rem; line-height: 1.3; margin: 0 0 1rem; }
+.qnum { display: block; font-size: .8rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+        color: var(--ink-2); margin-bottom: .35rem; }
+h3 { font-size: 1.1rem; margin: 2rem 0 .5rem; }
+p { margin: 0 0 1rem; }
+a { color: var(--accent); }
+a.ref { text-decoration: none; }
+a.ref:hover, a.ref:focus { text-decoration: underline; }
+
+/* Figures and tables may be wider than the text column, but never wider than the screen */
+figure { margin: 2rem 0; }
+figure.wide {
+  width: min(var(--wide-width), calc(100vw - 2.5rem));
+  position: relative; left: 50%; transform: translateX(-50%);
+}
+figure img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; }
+figcaption { font-size: .9rem; color: var(--ink-2); margin-top: .6rem; line-height: 1.5;
+             max-width: var(--text-width); margin-left: auto; margin-right: auto; }
+.table-figure figcaption { margin-top: 0; margin-bottom: .6rem; }
+figcaption .label { font-weight: 600; color: var(--ink); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: #fff; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; font-variant-numeric: tabular-nums; }
+th, td { padding: .5rem .75rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+thead th { background: var(--row); font-weight: 600; line-height: 1.3; }
+tbody tr:last-child td { border-bottom: 0; }
+th { white-space: normal; min-width: 6rem; }   /* keeps wrapped headers readable on phones */
+td { white-space: nowrap; }               /* values stay on one line; the box scrolls on narrow screens */
+th.num, td.num { text-align: right; }
+th.text, td.text { text-align: left; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+                    clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 40rem) {
+  body { font-size: 1rem; }
+  header { padding-top: 2rem; }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+  th, td { padding: .45rem .55rem; }
+}
+@media print {
+  figure.wide { width: 100%; left: 0; transform: none; }
+  a { color: inherit; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<header>
+<h1>Homework 3: Final Analysis</h1>
+<p class="byline"><strong>Alexandra Lopez</strong> · 15.561 Digital Revolution, Fall 2026</p>
+<p class="data-note">Data: the Northwind dataset. All comparisons use like-for-like Jan–Apr 1997 vs Jan–Apr 1998 windows.</p>
+</header>
+<main>
+<section id="question-1" aria-labelledby="question-1-title">
+<h2 id="question-1-title"><span class="qnum">Question 1</span>Is our growth coming from new customers or from existing ones buying more, and can it continue?</h2>
+<h3>Why it matters</h3>
+<p>If we only look at the revenue growth of 121% (<a class="ref" href="#figure-1"><strong>Figure 1</strong></a>), we could justify two opposite decisions for the business. If we know that the growth came from new customers, then we know we should invest in getting even more customers. If the growth came from the customers we already have, we should invest in serving them better. Without more information, we could waste budget investing in the wrong area and not know if the growth can continue.</p>
+<figure class="wide" id="figure-1">
+<a href="figures/figure1.png"><img src="figures/figure1.png" width="2187" height="832" loading="lazy" alt="Two bar charts of revenue in USD after discounts. Left panel, Jul 4 to Dec 31: $208,084 from 152 orders in 1996 and $331,526 from 219 orders in 1997, up 59.3%. Right panel, January to April: $191,322 from 123 orders in 1997 and $422,290 from 256 orders in 1998, up 120.7%."></a>
+<figcaption><span class="label">Figure 1.</span> Like-for-like revenue totals, same calendar windows one year apart. Left: Jul 4 – Dec 31, 1996 vs Jul 4 – Dec 31, 1997. Right: Jan – Apr 1997 vs Jan – Apr 1998.</figcaption>
+</figure>
+<h3>Analysis</h3>
+<p>For this question, I compared the months January-April in the years 1997 and 1998. The data covers 23 uneven months, so a full-year comparison would’ve been invalid. I calculated revenue as UnitPrice x Quantity x (1 - Discount). Each client was assigned a group based on their first order in the table. If their first order is within that window, they fall into the “New” bucket, and they fall into “Returning” if they have purchased before. I also took into consideration how many clients in the Customers table had never placed orders.</p>
+<h3>Main finding</h3>
+<p>My analysis revealed that almost all the growth came from our existing customers, and new clients basically disappeared (<a class="ref" href="#figure-2"><strong>Figure 2</strong></a>). Every existing customer purchased approximately 58% more times and spent 50% more money. At the same time, there are almost no customers that haven’t been “activated,” as 89 of the 91 customers in the database have already placed an order before.</p>
+<figure class="wide" id="figure-2">
+<a href="figures/figure2.png"><img src="figures/figure2.png" width="1780" height="1079" loading="lazy" alt="Grouped bar chart of revenue by customer cohort. January to April 1997: returning customers, 51 customers, 103 orders, $180,917; new customers, 14 customers, 20 orders, $10,405. January to April 1998: returning customers, 79 customers, 252 orders, $420,298; new customers, 1 customer, 4 orders, $1,992."></a>
+<figcaption><span class="label">Figure 2.</span> Revenue by customer cohort, Jan – Apr 1997 vs Jan – Apr 1998. Returning customers ordered before the window; new customers placed their first-ever order in the window.</figcaption>
+</figure>
+<h3>Business interpretation</h3>
+<p>Since growth is coming from existing customers, we should invest more in how we serve them. The additional money should go to relationship development, purchase reminders, and good customer service, all aspects that contribute to making a customer want to place an additional order.</p>
+</section>
+<section id="question-2" aria-labelledby="question-2-title">
+<h2 id="question-2-title"><span class="qnum">Question 2</span>How dependent are we on our largest customers, and is that dependency increasing or decreasing?</h2>
+<h3>Why it matters</h3>
+<p>The concentration of our sales dictates how dependent we are on a subset of customers. If a big share of our total revenue comes from a few customers, losing even one customer could significantly impact the business. To be able to understand if we should diversify or protect what already exists, it’s important to know how concentrated the business is today and whether it’s getting better or worse.</p>
+<h3>Analysis</h3>
+<p>Again, I looked at the months January-April in the years 1997 and 1998. A window of four months will naturally show higher concentration than a period of 23 months, simply because there are fewer active customers in it. Comparing 4 months against a complete period would create a tendency that doesn’t exist.</p>
+<p>For each window, I ranked clients from greatest to lowest revenue and graphed the cumulative share of revenue against the cumulative share of customers. I compared the top 10 customers in each window, not just by their share.</p>
+<h3>Main finding</h3>
+<p>Concentration is high and did not change in 1998 (<a class="ref" href="#figure-3"><strong>Figure 3</strong></a>). Ten customers represent more than half of revenues in both windows. The customer base grew by 15 customers and the top-10 share moved by one-tenth of a percentage point. The customers themselves, however, changed significantly: only 6 of the top 10 customers are the same ones in both windows (<a class="ref" href="#table-1"><strong>Table 1</strong></a>). Four customers joined the top 10 and four exited the list. The numbers say that nothing changed, but 40% of customers that account for over 50% of the business changed in just one year.</p>
+<figure class="wide" id="figure-3">
+<a href="figures/figure3.png"><img src="figures/figure3.png" width="1880" height="1220" loading="lazy" alt="Two cumulative concentration curves on the same axes, with a straight equal-spend reference line. The x-axis is the cumulative percent of customers ranked from highest revenue; the y-axis is the cumulative percent of the window&#x27;s revenue. January to April 1997: 65 customers; the top 1, 5 and 10 customers account for 9.9%, 37.5% and 54.2% of revenue. January to April 1998: 80 customers; 8.8%, 35.4% and 54.1%. The two curves nearly overlap, with 1998 slightly above 1997."></a>
+<figcaption><span class="label">Figure 3.</span> Customer revenue concentration, Jan – Apr 1997 vs Jan – Apr 1998. Customers are ranked from highest revenue; dots mark the top 1, 5 and 10 customers on each curve.</figcaption>
+</figure>
+<figure class="wide table-figure" id="table-1">
+<figcaption><span class="label">Table 1.</span> Top-10 customers in either window, with each customer&#x27;s rank and revenue in both windows (Jan – Apr 1997 vs Jan – Apr 1998). A dash means no orders in that window.</figcaption>
+<p id="table-1-desc" class="visually-hidden">Table of the 14 customers who were in the top 10 by revenue in at least one window. Six were in the top 10 in both windows, four only in January to April 1998, and four only in January to April 1997. Each row gives the customer&#x27;s rank and revenue in both windows.</p>
+<div class="table-wrap"><table aria-describedby="table-1-desc">
+<thead><tr>
+<th scope="col" class="text">Customer ID</th>
+<th scope="col" class="text">Company</th>
+<th scope="col" class="num">Rank, Jan–Apr 1997</th>
+<th scope="col" class="num">Revenue, Jan–Apr 1997 (USD)</th>
+<th scope="col" class="num">Rank, Jan–Apr 1998</th>
+<th scope="col" class="num">Revenue, Jan–Apr 1998 (USD)</th>
+<th scope="col" class="text">In the top 10</th>
+</tr></thead><tbody>
+<tr>
+<td class="text">QUICK</td>
+<td class="text">QUICK-Stop</td>
+<td class="num">2</td>
+<td class="num">15,585.76</td>
+<td class="num">1</td>
+<td class="num">37,217.32</td>
+<td class="text">both</td>
+</tr>
+<tr>
+<td class="text">ERNSH</td>
+<td class="text">Ernst Handel</td>
+<td class="num">1</td>
+<td class="num">18,883.17</td>
+<td class="num">2</td>
+<td class="num">35,992.65</td>
+<td class="text">both</td>
+</tr>
+<tr>
+<td class="text">SAVEA</td>
+<td class="text">Save-a-lot Markets</td>
+<td class="num">4</td>
+<td class="num">11,650.18</td>
+<td class="num">3</td>
+<td class="num">31,979.71</td>
+<td class="text">both</td>
+</tr>
+<tr>
+<td class="text">HUNGO</td>
+<td class="text">Hungry Owl All-Night Grocers</td>
+<td class="num">8</td>
+<td class="num">5,870.93</td>
+<td class="num">5</td>
+<td class="num">20,402.12</td>
+<td class="text">both</td>
+</tr>
+<tr>
+<td class="text">RATTC</td>
+<td class="text">Rattlesnake Canyon Grocery</td>
+<td class="num">3</td>
+<td class="num">14,364.20</td>
+<td class="num">6</td>
+<td class="num">19,982.55</td>
+<td class="text">both</td>
+</tr>
+<tr>
+<td class="text">SUPRD</td>
+<td class="text">Suprêmes délices</td>
+<td class="num">7</td>
+<td class="num">6,109.48</td>
+<td class="num">10</td>
+<td class="num">11,644.60</td>
+<td class="text">both</td>
+</tr>
+<tr>
+<td class="text">HANAR</td>
+<td class="text">Hanari Carnes</td>
+<td class="num">—</td>
+<td class="num">0.00</td>
+<td class="num">4</td>
+<td class="num">23,821.20</td>
+<td class="text">Jan – Apr 1998 only</td>
+</tr>
+<tr>
+<td class="text">KOENE</td>
+<td class="text">Königlich Essen</td>
+<td class="num">17</td>
+<td class="num">3,275.00</td>
+<td class="num">7</td>
+<td class="num">19,582.77</td>
+<td class="text">Jan – Apr 1998 only</td>
+</tr>
+<tr>
+<td class="text">WHITC</td>
+<td class="text">White Clover Markets</td>
+<td class="num">19</td>
+<td class="num">3,013.97</td>
+<td class="num">8</td>
+<td class="num">14,350.15</td>
+<td class="text">Jan – Apr 1998 only</td>
+</tr>
+<tr>
+<td class="text">FOLKO</td>
+<td class="text">Folk och fä HB</td>
+<td class="num">50</td>
+<td class="num">497.22</td>
+<td class="num">9</td>
+<td class="num">13,644.07</td>
+<td class="text">Jan – Apr 1998 only</td>
+</tr>
+<tr>
+<td class="text">BOTTM</td>
+<td class="text">Bottom-Dollar Markets</td>
+<td class="num">10</td>
+<td class="num">4,512.25</td>
+<td class="num">11</td>
+<td class="num">11,338.55</td>
+<td class="text">Jan – Apr 1997 only</td>
+</tr>
+<tr>
+<td class="text">HILAA</td>
+<td class="text">HILARIÓN-Abastos</td>
+<td class="num">9</td>
+<td class="num">5,190.68</td>
+<td class="num">18</td>
+<td class="num">6,043.20</td>
+<td class="text">Jan – Apr 1997 only</td>
+</tr>
+<tr>
+<td class="text">SIMOB</td>
+<td class="text">Simons bistro</td>
+<td class="num">5</td>
+<td class="num">11,188.40</td>
+<td class="num">—</td>
+<td class="num">0.00</td>
+<td class="text">Jan – Apr 1997 only</td>
+</tr>
+<tr>
+<td class="text">MEREP</td>
+<td class="text">Mère Paillarde</td>
+<td class="num">6</td>
+<td class="num">10,420.46</td>
+<td class="num">—</td>
+<td class="num">0.00</td>
+<td class="text">Jan – Apr 1997 only</td>
+</tr>
+</tbody></table></div>
+</figure>
+<h3>Business interpretation</h3>
+<p>Half of the revenues depend on approximately one in every 8 customers. In the 1998 window, 10 out of 80 customers generated 54% of revenues and the top 2 generated 17%. Losing one of those big customers would create a noticeable change. Moreover, adding 15 customers didn’t really move the share of the top 10 customers. Since the top 10 customer list changes, a fixed list of key customers would quickly become outdated. Therefore, every protection the company puts in place (e.g., service guarantees) has to be reassigned on a recurring basis to always protect the current top customers.</p>
+</section>
+<section id="question-3" aria-labelledby="question-3-title">
+<h2 id="question-3-title"><span class="qnum">Question 3</span>Which products should we stop carrying, push harder, or reconsider?</h2>
+<h3>Why it matters</h3>
+<p>The catalogue decisions (what to have in inventory, what to stop selling, what to restock) are made from the status fields in the Product tab. If those fields no longer agree with what customers actually purchase, the business will lose sales that it could’ve made and will leave unmoved money in inventory that no one wants. These two errors are invisible in a revenue report because those only show the products that were sold, but not what could've been sold or what wasn’t sold.</p>
+<h3>Analysis</h3>
+<p>I combined each product’s recorded attributes (e.g., discontinued flag, units in stock, units on order, reorder level) with its actual sales over the two like-for-like windows. With this data, I calculated the units sold per month at the recent pace and how many months of inventory are left at that pace. The products were classified into three groups: active products with inventory higher than their reorder level, active products with inventory that’s equal or lower than their reorder level and discontinued products.</p>
+<h3>Main finding</h3>
+<p>The list of discontinued products does not align with what the customers purchase. Those eight products sold 914 units in the 1997 window and 1,633 units in the 1998 window, an increase of 79% (<a class="ref" href="#table-2"><strong>Table 2</strong></a>). They generated $58,213 between January and April of 1998 (13.8% of all revenues in that window). One product, Thüringer Rostbratwurst, generated $33,683 (8% of all revenues in that window). Four of the eight products have no stock or orders to the supplier, but they somehow have orders until the end of April and beginning of May of 1998 (<a class="ref" href="#figure-4"><strong>Figure 4</strong></a>). The business is selling products that it decided not to replace.</p>
+<figure class="wide table-figure" id="table-2">
+<figcaption><span class="label">Table 2.</span> Products by status, with units sold in Jan – Apr 1997 and Jan – Apr 1998 and the stock and units on order recorded in the Product tab.</figcaption>
+<p id="table-2-desc" class="visually-hidden">Table of unit totals for three product groups: 51 active products with stock above their reorder level, 18 active products at or below their reorder level, and 8 discontinued products. The discontinued products sold 914 units in January to April 1997 and 1,633 units in January to April 1998, with 101 units in stock and none on order.</p>
+<div class="table-wrap"><table aria-describedby="table-2-desc">
+<thead><tr>
+<th scope="col" class="text">Status</th>
+<th scope="col" class="num">Products</th>
+<th scope="col" class="num">Units sold, Jan–Apr 1997</th>
+<th scope="col" class="num">Units sold, Jan–Apr 1998</th>
+<th scope="col" class="num">Units in stock</th>
+<th scope="col" class="num">Units on order</th>
+</tr></thead><tbody>
+<tr>
+<td class="text">Active, stock above reorder level</td>
+<td class="num">51</td>
+<td class="num">5196</td>
+<td class="num">10620</td>
+<td class="num">2814</td>
+<td class="num">0</td>
+</tr>
+<tr>
+<td class="text">Active, stock at/below reorder level</td>
+<td class="num">18</td>
+<td class="num">2105</td>
+<td class="num">3073</td>
+<td class="num">204</td>
+<td class="num">780</td>
+</tr>
+<tr>
+<td class="text">Discontinued</td>
+<td class="num">8</td>
+<td class="num">914</td>
+<td class="num">1633</td>
+<td class="num">101</td>
+<td class="num">0</td>
+</tr>
+</tbody></table></div>
+</figure>
+<figure class="wide" id="figure-4">
+<a href="figures/figure4.png"><img src="figures/figure4.png" width="2080" height="1279" loading="lazy" alt="Scatter plot of 77 products. The x-axis is average units sold per month from January to April 1998; the y-axis is units in stock from the Product tab. Blue circles are 51 active products with stock above their reorder level, orange triangles are 18 active products at or below their reorder level, and green squares are 8 discontinued products. A diagonal line marks stock equal to one month of sales at the January to April 1998 pace. Four discontinued products sit at zero stock while selling about 34 to 80 units a month, and one discontinued product sells about 131 units a month."></a>
+<figcaption><span class="label">Figure 4.</span> Recent product sales vs. recorded stock, by product status (77 products). Sales are the Jan – Apr 1998 monthly average; stock is from the Product tab.</figcaption>
+</figure>
+<h3>Business interpretation</h3>
+<p>The business should reactivate the discontinued products that are still being sold, or it should accept losing 14% of its revenue in that window. They’re not doing either of the two options today: they accept orders for products that won’t be reordered, which leads to stockouts and disappointed customers. It should also clear Mishi Kobe Niku and close it properly. It’s the only product where the discontinued label matches the reality, and its 29 units should either get sold off or written down.</p>
+</section>
+</main>
+</body>
+</html>
