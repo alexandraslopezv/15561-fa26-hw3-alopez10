@@ -94,8 +94,5 @@ homework 3/
 │   ├── index.html                single page, CSS inline, no JavaScript
 │   └── figures/                  figure1.png … figure4.png, written by the notebook
 ├── data/northwind.xlsx           local copy of Northwind; not read by the notebook
-├── figures/                      empty
-├── 15.561 FA26 HW 3_ AI-Assisted Business Data Analysis.pdf   homework assignment (PDF)
 ├── SKILL (3).md                  docstring skill used to document the notebook
-└── .claude/skills/python-docstrings/SKILL.md   installed copy of that skill
 ```
